@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity implements
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = firebaseDatabase.getReference();
 
-    Robot robot;
+    private Robot robot;
+    public MainActivity() {this.robot =  Robot.getInstance();}
+    public Robot getRobot() {return robot;}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
