@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onStop();
         robot.removeOnRobotReadyListener(this);
     }
-
+    @Override
     public void onRobotReady(boolean isReady) {
         if (isReady) {
             try {
