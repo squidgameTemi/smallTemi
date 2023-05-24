@@ -1,8 +1,11 @@
 package com.example.smalltemi;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +31,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        databaseReference.child("member").child("one").setValue(0);
+        databaseReference.child("member").child("two").setValue(0);
     }
+
+
 
     public void skidJoy(View view) {
         long t = System.currentTimeMillis();
