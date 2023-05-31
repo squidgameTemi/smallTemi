@@ -32,7 +32,23 @@ public class MainActivity extends AppCompatActivity implements
     public MainActivity() {this.robot =  Robot.getInstance();}
     public Robot getRobot() {return robot;}
 
-    int g_start, g_end;
+    int g_start, one_life, two_life;
+
+    public void goTo(String destination) {
+        for (String location : robot.getLocations()) {
+            if (location.equals(destination.toLowerCase().trim())) {
+                robot.goTo(destination.toLowerCase().trim());
+            }
+        }
+    }
+
+    public void skidJoy1() {
+        long t = System.currentTimeMillis();
+        long end = t + 4000;
+        while (System.currentTimeMillis() < end) {
+            robot.skidJoy(1F, 0F);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,55 +58,48 @@ public class MainActivity extends AppCompatActivity implements
         databaseReference.child("member").child("two").setValue(1);
         databaseReference.child("win").child("one").setValue(0);
         databaseReference.child("win").child("two").setValue(0);
-        databaseReference.child("sensor").child("on").setValue(0);
 
-        databaseReference.child("game/start").addValueEventListener(new ValueEventListener()
+        databaseReference.child("game").addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
                 Object rdata = snapshot.getValue();
                 g_start=Integer.parseInt(rdata.toString());
+                if(g_start == 0){   //게임종료 눌렀을 때 제자리로 돌아가기
+                    goTo("일");
+                }
+                if(g_start > 0){
+                    databaseReference.child("member/one").addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            Object rdata = snapshot.getValue();
+                            one_life=Integer.parseInt(rdata.toString());
+                            if(one_life == 0){
+                                long t = System.currentTimeMillis();
+                                long end = t + 4000;
+                                while (System.currentTimeMillis() < end) {
+                                    robot.skidJoy(1F, 0F);
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-        if(g_start == 1){
-            //센서 작동
-            databaseReference.child("sensor").child("on").setValue(1);
-        }
-
-        /*광학측정기로 플레이어의 움직임을 감지
-        if(){ 움직임 감지한다면
-            databaseReference.child("member").child("one").setValue(0); 1플레이어 탈락
-            조교 테미는 앞으로 이동하여 물총 발사
-            long t = System.currentTimeMillis();
-            long end = t + 4000;    //4초 동안 앞으로 전진
-            while (System.currentTimeMillis() < end) {
-                robot.skidJoy(1F, 0F);
-            }
-        }*/
-
     }
 
     public void win(View view){
         databaseReference.child("win").child("one").setValue(1);
         Toast.makeText(getApplication(),"1번 통과하셨습니다", Toast.LENGTH_SHORT).show();
-    }
-
-
-
-    public void skidJoy(View view) {
-        long t = System.currentTimeMillis();
-        long end = t + 4000;
-        while (System.currentTimeMillis() < end) {
-            robot.skidJoy(1F, 0F);
-            /*if(System.currentTimeMillis() == end - 2000){
-                break;
-            }*/
-        }
     }
 
     @Override

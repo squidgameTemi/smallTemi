@@ -13,13 +13,4 @@
         android:src="@drawable/circle"
         android:onClick="win"/>
 
-    <Button
-        android:id="@+id/btnskidJoy"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:onClick="skidJoy"
-        android:text="@string/skidjoy"
-        android:textSize="50dp"
-        tools:ignore="MissingConstraints" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
