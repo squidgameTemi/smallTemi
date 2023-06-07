@@ -32,21 +32,13 @@ public class MainActivity extends AppCompatActivity implements
     public MainActivity() {this.robot =  Robot.getInstance();}
     public Robot getRobot() {return robot;}
 
-    int g_start, one_life, two_life;
+    int g_start, one_life, time_over, win_two;
 
     public void goTo(String destination) {
         for (String location : robot.getLocations()) {
             if (location.equals(destination.toLowerCase().trim())) {
                 robot.goTo(destination.toLowerCase().trim());
             }
-        }
-    }
-
-    public void skidJoy1() {
-        long t = System.currentTimeMillis();
-        long end = t + 4000;
-        while (System.currentTimeMillis() < end) {
-            robot.skidJoy(1F, 0F);
         }
     }
 
@@ -79,7 +71,45 @@ public class MainActivity extends AppCompatActivity implements
                             one_life=Integer.parseInt(rdata.toString());
                             if(one_life == 0){
                                 long t = System.currentTimeMillis();
-                                long end = t + 4000;
+                                long end = t + 2500;
+                                while (System.currentTimeMillis() < end) {
+                                    robot.skidJoy(1F, 0F);
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+
+                    databaseReference.child("time_over").addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            Object rdata = snapshot.getValue();
+                            time_over=Integer.parseInt(rdata.toString());
+                            if(one_life == 1 && time_over == 1){
+                                long t = System.currentTimeMillis();
+                                long end = t + 2500;
+                                while (System.currentTimeMillis() < end) {
+                                    robot.skidJoy(1F, 0F);
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+
+                    databaseReference.child("win/two").addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            Object rdata = snapshot.getValue();
+                            win_two=Integer.parseInt(rdata.toString());
+                            if(one_life == 1 && win_two == 1){
+                                long t = System.currentTimeMillis();
+                                long end = t + 2500;
                                 while (System.currentTimeMillis() < end) {
                                     robot.skidJoy(1F, 0F);
                                 }
@@ -90,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements
                     });
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
