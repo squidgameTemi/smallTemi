@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements
         databaseReference.child("member").child("two").setValue(1);
         databaseReference.child("win").child("one").setValue(0);
         databaseReference.child("win").child("two").setValue(0);
+        databaseReference.child("stop").child("one").setValue(0);
+        databaseReference.child("stop").child("two").setValue(0);
 
         databaseReference.child("game").addValueEventListener(new ValueEventListener()
         {
@@ -71,12 +74,20 @@ public class MainActivity extends AppCompatActivity implements
                             one_life=Integer.parseInt(rdata.toString());
                             if(one_life == 0){
                                 long t = System.currentTimeMillis();
-                                long end = t + 2500;
+                                long end = t + 2000;
                                 while (System.currentTimeMillis() < end) {
                                     robot.skidJoy(1F, 0F);
                                 }
+
+                                Handler mHandler = new Handler();
+                                mHandler.postDelayed(new Runnable()  {
+                                    public void run() {
+                                        databaseReference.child("stop").child("one").setValue(1);
+                                    }
+                                }, 500); // 0.5초후
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {}
                     });
@@ -90,11 +101,19 @@ public class MainActivity extends AppCompatActivity implements
                             time_over=Integer.parseInt(rdata.toString());
                             if(one_life == 1 && time_over == 1){
                                 long t = System.currentTimeMillis();
-                                long end = t + 2500;
+                                long end = t + 2000;
                                 while (System.currentTimeMillis() < end) {
                                     robot.skidJoy(1F, 0F);
                                 }
+
+                                Handler mHandler = new Handler();
+                                mHandler.postDelayed(new Runnable()  {
+                                    public void run() {
+                                        databaseReference.child("stop").child("one").setValue(1);
+                                    }
+                                }, 500); // 0.5초후
                             }
+
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {}
@@ -109,10 +128,13 @@ public class MainActivity extends AppCompatActivity implements
                             win_two=Integer.parseInt(rdata.toString());
                             if(one_life == 1 && win_two == 1){
                                 long t = System.currentTimeMillis();
-                                long end = t + 2500;
-                                while (System.currentTimeMillis() < end) {
-                                    robot.skidJoy(1F, 0F);
-                                }
+                                long end = t + 2000;
+                                Handler mHandler = new Handler();
+                                mHandler.postDelayed(new Runnable()  {
+                                    public void run() {
+                                        databaseReference.child("stop").child("one").setValue(1);
+                                    }
+                                }, 500); // 0.5초후
                             }
                         }
                         @Override
